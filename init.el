@@ -22,6 +22,10 @@
 (tooltip-mode -1)      ;; Disable tooltips
 (set-fringe-mode 10)   ;; Give some breathing room (spacing?)
 
+;; set  PATH
+(use-package exec-path-from-shell)
+(exec-path-from-shell-initialize)
+
 
 
 ;; Theme
@@ -34,6 +38,7 @@
 (setq default-directory "~/Github")
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; Make ESC quit prompts
 (cua-mode 1)  ;; Enable CUA mode (natural copy, paste...)
+(setq make-backup-files nil)
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -137,4 +142,63 @@
  "M-<down>" 'windmove-down
  "M-<left>" 'windmove-left)
 
+
+(use-package org
+  :config
+  (setq org-ellipsis " ▾"))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+
+;; LSP mode
+
+
+(defun frexom/lsp-mode-setup()
+  (setq lsp-headerline-breadcrumb-segments '(path-to-up-project symbols))
+  (lsp-
+   headerline-breadcrumb-mode))
+
+(use-package yasnippet)
+(yas-global-mode)
+
+(use-package lsp-mode
+  :commands (lsp lsp-deffered)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t)
+  :hook (lsp-mode . frexom/lsp-mode-setup))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+
+(use-package company
+  :after lsp-mode
+  :hook (prog-mode . company-mode)
+  :bind (:map company-active-map
+	      ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+	       ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
+;; Python
+(use-package lsp-pyright
+  :ensure t
+  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
 
