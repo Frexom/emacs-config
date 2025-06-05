@@ -36,7 +36,7 @@
 
 ;; User Experience
 (setq default-directory "~/Github")
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; Make ESC quit prompts
+(define-key key-translation-map (kbd "ESC") (kbd "C-g")) ;; Make ESC quit prompts
 (cua-mode 1)  ;; Enable CUA mode (natural copy, paste...)
 (setq make-backup-files nil)
 
@@ -118,6 +118,9 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
+(projectile-add-known-project '"~/Github/emacs-config/")
+(projectile-add-known-project '"~/Github/done-platform/")
+
 
 ;; Magit
 
@@ -129,18 +132,39 @@
 
 (use-package general)
 
+;; Move line with C-S-<up>/<down>
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+
 ;; French keeb layout
 (general-define-key
  "C-é" 'split-window-vertically
  "C-\"" 'split-window-horizontally
  "C-à" 'delete-window)
 
-;; Move window
+;; Movement
 (general-define-key
  "M-<up>" 'windmove-up
  "M-<right>" 'windmove-right
  "M-<down>" 'windmove-down
- "M-<left>" 'windmove-left)
+ "M-<left>" 'windmove-left
+ "C-<up>" 'move-line-up
+ "C-<down>" 'move-line-down
+ "C-S-f" 'counsel-projectile-rg
+ "C-/" 'comment-line)
 
 
 (use-package org
@@ -159,8 +183,7 @@
 
 (defun frexom/lsp-mode-setup()
   (setq lsp-headerline-breadcrumb-segments '(path-to-up-project symbols))
-  (lsp-
-   headerline-breadcrumb-mode))
+  (lsp-headerline-breadcrumb-mode))
 
 (use-package yasnippet)
 (yas-global-mode)
@@ -194,6 +217,12 @@
   :config
   (setq typescript-indent-level 2))
 
+(use-package prettier
+  :hook (typescript-mode . prettier-mode)
+  (html-mode . prettier-mode)
+  (scss-mode . prettier-mode))
+  
+
 ;; Python
 (use-package lsp-pyright
   :ensure t
@@ -202,3 +231,9 @@
                           (require 'lsp-pyright)
                           (lsp))))  ; or lsp-deferred
 
+
+;; Move auto save files away
+ (setq backup-directory-alist
+          `((".*" . ,"/tmp/")))
+    (setq auto-save-file-name-transforms
+          `((".*" ,"/tmp/" t)))
