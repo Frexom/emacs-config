@@ -121,7 +121,6 @@
 (projectile-add-known-project '"~/Github/emacs-config/")
 (projectile-add-known-project '"~/Github/done-platform/")
 
-
 ;; Magit
 
 (use-package magit
@@ -164,7 +163,8 @@
  "C-<up>" 'move-line-up
  "C-<down>" 'move-line-down
  "C-S-f" 'counsel-projectile-rg
- "C-/" 'comment-line)
+ "C-/" 'comment-line
+ "C-a" 'mark-whole-buffer)
 
 
 (use-package org
@@ -210,18 +210,11 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
-
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :hook (typescript-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 2))
-
-(use-package prettier
-  :hook (typescript-mode . prettier-mode)
-  (html-mode . prettier-mode)
-  (scss-mode . prettier-mode))
-  
 
 ;; Python
 (use-package lsp-pyright
@@ -232,8 +225,15 @@
                           (lsp))))  ; or lsp-deferred
 
 
+;; PHP
+(use-package php-cs-fixer)
+(add-to-list 'load-path "~/Github/done-platform/services/app-back-platform/vendor/bin/")
+(setq php-cs-fixer-command "php-cs-fixer")
+
+
 ;; Move auto save files away
- (setq backup-directory-alist
+(setq backup-directory-alist
           `((".*" . ,"/tmp/")))
-    (setq auto-save-file-name-transforms
+(setq auto-save-file-name-transforms
           `((".*" ,"/tmp/" t)))
+(setq create-lockfiles nil)
