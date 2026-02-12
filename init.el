@@ -66,6 +66,7 @@
   :diminish
   :bind (("C-f" . swiper)
 	 ("C-r" . eval-buffer)
+	 ("C-S-r" . revert-buffer)
          :map ivy-minibuffer-map
          ("TAB" . ivy-alt-done)	
          ("C-l" . ivy-alt-done)
@@ -180,7 +181,6 @@
 
 ;; LSP mode
 
-
 (defun frexom/lsp-mode-setup()
   (setq lsp-headerline-breadcrumb-segments '(path-to-up-project symbols))
   (lsp-headerline-breadcrumb-mode))
@@ -224,12 +224,20 @@
                           (require 'lsp-pyright)
                           (lsp))))  ; or lsp-deferred
 
-
 ;; PHP
 (use-package php-cs-fixer)
 (add-to-list 'load-path "~/Github/done-platform/services/app-back-platform/vendor/bin/")
 (setq php-cs-fixer-command "php-cs-fixer")
 
+;; Kotlin
+(use-package kotlin-mode
+  :mode "\\.kt\\'")
+
+
+
+;; HTML
+(setq sgml-basic-offset 2)
+(setq css-indent-offset 2)
 
 ;; Move auto save files away
 (setq backup-directory-alist
