@@ -3,7 +3,7 @@
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                           ("org" . "https://orgmode.org/elpa/")
-			  ("elpa" . "https://elpa.gnu.org/packages/"))) 
+			  ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
 (unless package-archive-contents
@@ -68,7 +68,7 @@
 	 ("C-r" . eval-buffer)
 	 ("C-S-r" . revert-buffer)
          :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)	
+         ("TAB" . ivy-alt-done)
          ("C-l" . ivy-alt-done)
          ("C-j" . ivy-next-line)
          ("C-k" . ivy-previous-line)
@@ -89,7 +89,7 @@
 	 ("C-r" . 'counsel-minibuffer-history))
   :config
   (setq ivy-initial-inputs-alist nil))  ; Don't start searches with ^
-	 
+
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
@@ -229,9 +229,17 @@
 (add-to-list 'load-path "~/Github/done-platform/services/app-back-platform/vendor/bin/")
 (setq php-cs-fixer-command "php-cs-fixer")
 
+(use-package web-mode
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-enable-auto-closing nil)
+  (setq web-mode-enable-auto-pairing nil))
+
 ;; Kotlin
 (use-package kotlin-mode
-  :mode "\\.kt\\'")
+  :mode "\\.kt\\'"
+  :config
+  (setq-default kotlin-tab-width 2))
 
 
 
@@ -245,3 +253,9 @@
 (setq auto-save-file-name-transforms
           `((".*" ,"/tmp/" t)))
 (setq create-lockfiles nil)
+
+;; Remove trailing whitespace on save
+(add-hook 'local-write-file-hooks
+            (lambda ()
+               (delete-trailing-whitespace)
+               nil))
