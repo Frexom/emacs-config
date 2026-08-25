@@ -1,6 +1,4 @@
-;; Set lexical binding
-(setq lexical-binding t)
-
+;; -*- lexical-binding: t; -*-
 
 ;; Packages
 (require 'package)
@@ -130,7 +128,8 @@
   :init
   (when (file-directory-p "~/Github")
     (setq projectile-project-search-path '("~/Github")))
-  (setq projectile-switch-project-action #'projectile-dired))
+  (setq projectile-switch-project-action #'projectile-dired)
+  (projectile-discover-projects-in-directory "~/Github"))
 
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
@@ -237,6 +236,7 @@
 
 ;; PHP
 (use-package web-mode
+  :mode "\\.php\\'"
   :config
   ;; (setq web-mode-markup-indent-offset 2)
   (setq web-mode-enable-auto-quoting nil)
