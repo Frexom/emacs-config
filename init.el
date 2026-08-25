@@ -1,3 +1,7 @@
+;; Set lexical binding
+(setq lexical-binding t)
+
+
 ;; Packages
 (require 'package)
 
@@ -21,6 +25,10 @@
 (tool-bar-mode -1)     ;; Disable tool bar
 (tooltip-mode -1)      ;; Disable tooltips
 (set-fringe-mode 10)   ;; Give some breathing room (spacing?)
+
+;; Disable mouse
+(use-package disable-mouse)
+(global-disable-mouse-mode)
 
 ;; set  PATH
 (use-package exec-path-from-shell)
@@ -59,14 +67,22 @@
   :config
   (setq which-key-idle-delay 0.1))
 
+;; Enable auto revert
+(global-auto-revert-mode t)
 
+;; Indent with spaces
+(indent-tabs-mode nil)
+
+
+(use-package crux
+  :bind(
+	("C-M-d" . crux-delete-file-and-buffer)))
 
 ;; Autocompletion with Ivy
 (use-package ivy
   :diminish
   :bind (("C-f" . swiper)
 	 ("C-r" . eval-buffer)
-	 ("C-S-r" . revert-buffer)
          :map ivy-minibuffer-map
          ("TAB" . ivy-alt-done)
          ("C-l" . ivy-alt-done)
@@ -102,8 +118,8 @@
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 35)))
 
-;; Projectile
 
+;; Projectile
 (use-package projectile
   :diminish projectile-mode
   :config (projectile-mode)
@@ -119,11 +135,8 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
-(projectile-add-known-project '"~/Github/emacs-config/")
-(projectile-add-known-project '"~/Github/done-platform/")
 
 ;; Magit
-
 (use-package magit
   :commands (magit-status magit-get-current-branch)
   :custom
@@ -149,7 +162,7 @@
   (indent-according-to-mode))
 
 
-;; French keeb layout
+;; French keyboard layout
 (general-define-key
  "C-é" 'split-window-vertically
  "C-\"" 'split-window-horizontally
@@ -212,9 +225,7 @@
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
-  :hook (typescript-mode . lsp-deferred)
-  :config
-  (setq typescript-indent-level 2))
+  :hook (typescript-mode . lsp-deferred))
 
 ;; Python
 (use-package lsp-pyright
@@ -225,14 +236,12 @@
                           (lsp))))  ; or lsp-deferred
 
 ;; PHP
-(use-package php-cs-fixer)
-(add-to-list 'load-path "~/Github/done-platform/services/app-back-platform/vendor/bin/")
-(setq php-cs-fixer-command "php-cs-fixer")
-
 (use-package web-mode
   :config
-  (setq web-mode-markup-indent-offset 2)
+  ;; (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-enable-auto-quoting nil)
   (setq web-mode-enable-auto-closing nil)
+  (setq web-mode-enable-auto-opening nil)
   (setq web-mode-enable-auto-pairing nil))
 
 ;; Kotlin
@@ -247,15 +256,12 @@
 (setq sgml-basic-offset 2)
 (setq css-indent-offset 2)
 
+;; YAML
+(use-package yaml-mode)
+
 ;; Move auto save files away
 (setq backup-directory-alist
           `((".*" . ,"/tmp/")))
 (setq auto-save-file-name-transforms
           `((".*" ,"/tmp/" t)))
 (setq create-lockfiles nil)
-
-;; Remove trailing whitespace on save
-(add-hook 'local-write-file-hooks
-            (lambda ()
-               (delete-trailing-whitespace)
-               nil))
